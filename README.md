@@ -2,6 +2,10 @@
 
 A "Who's that Pokémon" guessing game
 
+## Live Demo
+
+https://whos-that-dang-pokemon.netlify.app/
+
 ## Usage
 
 ### Install packages
