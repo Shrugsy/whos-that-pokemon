@@ -2417,6 +2417,11 @@ ignore@^5.1.4:
   resolved "https://registry.yarnpkg.com/ignore/-/ignore-5.1.8.tgz#f150a8b50a34289b33e22f5889abd4d8016f0e57"
   integrity sha512-BMpfD7PpiETpBl/A6S498BaIJ6Y/ABT93ETbby2fP00v4EbvPBXWEoaR1UBPKs3iR53pJY7EtZk5KACI57i1Uw==
 
+"immer@>=1.0.0 <9.0.0":
+  version "8.0.4"
+  resolved "https://registry.yarnpkg.com/immer/-/immer-8.0.4.tgz#3a21605a4e2dded852fb2afd208ad50969737b7a"
+  integrity sha512-jMfL18P+/6P6epANRvRk6q8t+3gGhqsJ9EuJ25AXE+9bNTYtssvzeYbEd0mXRYWCmmXSIbnlpz6vd6iJlmGGGQ==
+
 immer@^9.0.1:
   version "9.0.5"
   resolved "https://registry.yarnpkg.com/immer/-/immer-9.0.5.tgz#a7154f34fe7064f15f00554cc94c66cc0bf453ec"
@@ -4524,6 +4529,13 @@ uri-js@^4.2.2:
   integrity sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==
   dependencies:
     punycode "^2.1.0"
+
+use-local-slice@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/use-local-slice/-/use-local-slice-1.2.0.tgz#e0b786bc6da6a347c8dcba008833d1637675c488"
+  integrity sha512-SAp1SZAuHdmUqEi38RyU17LmmzN37N72y2XJCT3K9OWv21QogVVcHs6IATL+hG8MZg9Ow3zgLw66vuKWAzo09A==
+  dependencies:
+    immer ">=1.0.0 <9.0.0"
 
 v8-compile-cache@^2.0.3:
   version "2.3.0"

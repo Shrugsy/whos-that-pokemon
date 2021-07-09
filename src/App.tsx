@@ -1,55 +1,76 @@
-import { useState } from 'react';
 import { css } from '@emotion/react';
 import { Button } from '@material-ui/core';
 
-import { useGetProjectsQuery } from '@/service/api';
-import './App.css';
+import { capitalizeFirstLetter } from './utils/general';
+import { SpriteItem } from './components/SpriteItem';
+import { usePokemonSprite } from './utils/usePokemonSprite';
+
+const getClasses = ({ isFetching }: { isFetching: boolean }) => {
+  return {
+    app: css`
+      background-color: #282c34;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-size: calc(10px + 2vmin);
+      color: white;
+    `,
+    spritesContainer: css`
+      opacity: ${isFetching ? 0.5 : 1};
+      display: flex;
+      flex-direction: column;
+    `,
+    pokemonName: css`
+      margin: 0 auto;
+    `,
+    container: css`
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+    `,
+    fetcher: css`
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    `,
+  };
+};
 
 function App() {
-  const [count, setCount] = useState(0);
-  const { data, isFetching, isError, isSuccess, refetch } = useGetProjectsQuery();
+  const { getRandomPokemon, data, randomSprite, isFetching, isError, isSuccess } =
+    usePokemonSprite();
+
+  const classes = getClasses({ isFetching });
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <p
-          css={css`
-            color: yellow;
-          `}
-        >
-          Hello Vite + React!
-        </p>
-        <div>
+    <div css={classes.app}>
+      <div css={classes.container}>
+        <div css={classes.fetcher}>
           <p>
             {isFetching
-              ? 'Fetching projects...'
+              ? 'Fetching pokemon...'
               : isError
-              ? 'Error fetching projects!'
+              ? 'Error fetching pokemon!'
               : isSuccess
-              ? 'Successfully fetched projects!'
-              : ''}
+              ? 'Successfully fetched pokemon!'
+              : 'Waiting to fetch pokemon'}
+          </p>
+          <p>
+            <Button variant="contained" color="primary" onClick={getRandomPokemon}>
+              Next Pokemon
+            </Button>
           </p>
         </div>
-        <div
-          css={css`
-            opacity: ${isFetching ? 0.5 : 1};
-          `}
-        >
-          Projects: {JSON.stringify(data)}
+        <div css={classes.spritesContainer}>
+          <span css={classes.pokemonName}>
+            {capitalizeFirstLetter(data?.name ?? 'No pokemon loaded')} ({data?.id})
+          </span>
+          <SpriteItem sprite={randomSprite} />
         </div>
-        <Button variant="contained" color="primary" onClick={refetch}>
-          Re-fetch projects
-        </Button>
-        <p>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => setCount((count) => count + 1)}
-          >
-            count is: {count}
-          </Button>
-        </p>
-      </header>
+      </div>
     </div>
   );
 }

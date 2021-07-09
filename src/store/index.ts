@@ -8,7 +8,12 @@ export function setUpStore() {
     reducer: {
       [api.reducerPath]: api.reducer,
     },
-    middleware: (gDM) => gDM().concat(api.middleware),
+    middleware: (gDM) =>
+      gDM({
+        serializableCheck: {
+          warnAfter: 200,
+        },
+      }).concat(api.middleware),
   });
   setupListeners(store.dispatch);
 
