@@ -1,28 +1,21 @@
 import { StrictMode } from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { css, Global } from '@emotion/react';
 
-import { worker } from '@/_mocks/browser';
+// import { worker } from '@/_mocks/browser';
 import { store } from '@/store';
 
+import { GlobalStyler } from './GlobalStyler';
 import App from './App';
 
 import './index.css';
 
 async function run() {
-  await worker.start();
+  // await worker.start();
   ReactDOM.render(
     <StrictMode>
       <Provider store={store}>
-        <Global
-          styles={css`
-            body {
-              background-color: #282c34;
-              color: white;
-            }
-          `}
-        />
+        <GlobalStyler />
         <App />
       </Provider>
     </StrictMode>,
