@@ -63,7 +63,7 @@ function App() {
 
   return (
     <div css={classes.app}>
-      <h1 css={classes.heading}>Who&apos;s that Pokemon?</h1>
+      <h1 css={classes.heading}>Who&apos;s that Pokémon?</h1>
       <div css={classes.gameContainer}>
         <section css={classes.leftSection}>
           {/* LEFT */}
