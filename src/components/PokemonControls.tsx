@@ -23,6 +23,10 @@ const quizBtnsContainerCss = css`
 const nextPokemonBtnCss = css`
   margin-top: 32px;
 `;
+const outcomeTextCss = css`
+  height: 1.5rem;
+  font-size: 2rem;
+`;
 type PokemonControlsProps = {
   correctPokemonId: number | undefined;
   pokemonOneData: CorePokemonData | undefined;
@@ -58,6 +62,11 @@ export function PokemonControls({
     onChoicePicked(pokemonId);
   }
 
+  let outcomeText = '';
+  if (pickedId === null) outcomeText = '';
+  else if (pickedId === correctPokemonId) outcomeText = 'Correct!';
+  else outcomeText = 'Incorrect!';
+
   return (
     <div css={containerCss}>
       <div>{isError && 'Error fetching pokemon!'}</div>
@@ -80,6 +89,7 @@ export function PokemonControls({
       >
         Next Pokemon
       </StyledButton>
+      <div css={outcomeTextCss}>{outcomeText}</div>
     </div>
   );
 }

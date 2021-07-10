@@ -74,6 +74,7 @@ const colors: Record<QuizButtonStatus, { backgroundColor: string; color: string 
 };
 function getStyles(status: QuizButtonStatus) {
   return css`
+    font-size: 2rem;
     background-color: #4b8eaf;
     color: white;
     &.Mui-disabled {
