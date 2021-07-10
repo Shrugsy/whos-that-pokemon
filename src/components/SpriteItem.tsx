@@ -17,11 +17,14 @@ const getClasses = ({ isFetching, isSilhouette, isShiny }: GetClassesOpts) => {
     imageContainer: css`
       opacity: ${isFetching ? 0.5 : 1};
       position: relative;
-      height: 450px;
+      max-height: 100vh;
+      max-width: 600px;
+      width: 100%;
     `,
     image: css`
-      width: 600px;
-      height: 450px;
+      width: 100%;
+      max-height: 600px;
+      object-fit: contain;
       transition: filter 500ms;
       ${isSilhouette ? silhouetteStyles : ''}
     `,

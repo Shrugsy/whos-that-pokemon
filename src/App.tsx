@@ -1,48 +1,60 @@
 import { css } from '@emotion/react';
-import { useReducer } from 'react';
 
 import { SpriteItem } from './components/SpriteItem';
 import { usePokemonSprite } from './utils/usePokemonSprite';
 import { PokemonControls } from './components/PokemonControls';
 
-const getClasses = ({ isFetching }: { isFetching: boolean }) => {
-  return {
-    app: css`
-      background-color: #282c34;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: space-around;
-      color: white;
-    `,
-    pokemonName: css`
-      margin: 0 auto;
-    `,
-    topSection: css`
-      padding-top: 16px;
-    `,
-    middleSection: css`
-      padding-bottom: 32px;
-    `,
-  };
+const flexCenter = css`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+const classes = {
+  app: css`
+    min-height: 100vh;
+    overflow: auto;
+    display: flex;
+    @media only screen and (max-width: 1024px) {
+      flex-direction: column;
+    }
+  `,
+  leftSection: css`
+    ${flexCenter}
+    flex-grow: 1;
+  `,
+  rightSection: css`
+    ${flexCenter}
+    z-index: 1; // keeps text above the sprite image
+    @media only screen and (max-width: 1024px) {
+      padding-bottom: 64px;
+    }
+    @media only screen and (min-width: 1024px) {
+      padding-right: 64px;
+    }
+  `,
 };
 
 function App() {
-  const [isSilhouette, toggleIsSilhouette] = useReducer((s) => !s, false);
-  const { getRandomPokemon, data, randomSprite, isFetching, isError, isSuccess } =
-    usePokemonSprite();
+  const {
+    getRandomPokemon,
+    data,
+    randomSprite,
+    isFetching,
+    isError,
+    isSuccess,
+    isSilhouette,
+    toggleIsSilhouette,
+  } = usePokemonSprite();
   const pokemonName = data?.name ?? 'No pokemon loaded';
   const pokemonId = data?.id;
-  const classes = getClasses({ isFetching });
 
   return (
     <div css={classes.app}>
-      <section css={classes.topSection}>
+      <section css={classes.leftSection}>
         {/* LEFT */}
         <SpriteItem sprite={randomSprite} isFetching={isFetching} isSilhouette={isSilhouette} />
       </section>
-      <section css={classes.middleSection}>
+      <section css={classes.rightSection}>
         {/* RIGHT */}
         <PokemonControls
           pokemonName={pokemonName}

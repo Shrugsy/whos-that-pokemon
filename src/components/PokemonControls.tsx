@@ -27,7 +27,7 @@ type PokemonControlsProps = {
   isSuccess: boolean;
   getRandomPokemon: () => void;
   isSilhouette: boolean;
-  toggleIsSilhouette: () => void;
+  toggleIsSilhouette: (nextState?: boolean) => void;
 };
 export function PokemonControls({
   pokemonName,
@@ -58,7 +58,7 @@ export function PokemonControls({
         <Button variant="contained" color="primary" onClick={getRandomPokemon}>
           Next Pokemon
         </Button>
-        <Button variant="contained" color="primary" onClick={toggleIsSilhouette}>
+        <Button variant="contained" color="primary" onClick={() => toggleIsSilhouette()}>
           Toggle Silhouette
         </Button>
       </div>

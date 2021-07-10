@@ -1,5 +1,7 @@
 import { skipToken } from '@reduxjs/toolkit/dist/query';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
+import { useLocalSlice } from 'use-local-slice';
+import { PayloadAction } from '@reduxjs/toolkit';
 
 import { useGetPokemonSpritesByIdQuery } from '@/service/api';
 
@@ -13,21 +15,47 @@ const ranges = {
     max: 151,
   },
 };
+
+type SliceState = {
+  pokemonId: number;
+  isSilhouette: boolean;
+};
 type AvailableGenerations = keyof typeof ranges;
 function getRandomPokemonId(generation: AvailableGenerations = 'gen1'): number {
   return getRandomInt(ranges[generation].min, ranges[generation].max);
 }
 export const usePokemonSprite = () => {
   const generation: AvailableGenerations = 'gen1';
-  const [pokemonId, setPokemonId] = useState<number>(() => getRandomPokemonId(generation));
+
+  const [state, dispatchAction] = useLocalSlice({
+    initialState: {
+      isSilhouette: true,
+      pokemonId: getRandomPokemonId(generation),
+    } as SliceState,
+    reducers: {
+      pokemonIdReceived(draft, { payload }: PayloadAction<number>) {
+        draft.isSilhouette = true;
+        draft.pokemonId = payload;
+      },
+      silhouetteToggled(draft, { payload }: { payload?: boolean }) {
+        if (typeof payload === 'boolean') {
+          draft.isSilhouette = payload;
+        } else {
+          draft.isSilhouette = !draft.isSilhouette;
+        }
+      },
+    },
+  });
+
   const { data, spritesArray, isFetching, isError, isSuccess } = useGetPokemonSpritesByIdQuery(
-    pokemonId || skipToken
+    state.pokemonId || skipToken
   );
+
   const randomSprite = useMemo(() => pickRandomSprite(spritesArray), [spritesArray]);
 
   const getRandomPokemon = useCallback(() => {
-    setPokemonId(getRandomPokemonId(generation));
-  }, [generation]);
+    dispatchAction.pokemonIdReceived(getRandomPokemonId(generation));
+  }, [generation, dispatchAction]);
 
   return {
     data,
@@ -36,5 +64,7 @@ export const usePokemonSprite = () => {
     isFetching,
     isError,
     isSuccess,
+    isSilhouette: state.isSilhouette,
+    toggleIsSilhouette: dispatchAction.silhouetteToggled,
   };
 };
