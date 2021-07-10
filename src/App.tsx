@@ -1,9 +1,9 @@
 import { css } from '@emotion/react';
-import { Button } from '@material-ui/core';
+import { useReducer } from 'react';
 
-import { capitalizeFirstLetter } from './utils/general';
 import { SpriteItem } from './components/SpriteItem';
 import { usePokemonSprite } from './utils/usePokemonSprite';
+import { PokemonControls } from './components/PokemonControls';
 
 const getClasses = ({ isFetching }: { isFetching: boolean }) => {
   return {
@@ -11,66 +11,49 @@ const getClasses = ({ isFetching }: { isFetching: boolean }) => {
       background-color: #282c34;
       min-height: 100vh;
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
       align-items: center;
-      font-size: calc(10px + 2vmin);
+      justify-content: space-around;
       color: white;
-    `,
-    spritesContainer: css`
-      opacity: ${isFetching ? 0.5 : 1};
-      display: flex;
-      flex-direction: column;
     `,
     pokemonName: css`
       margin: 0 auto;
     `,
-    container: css`
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: space-between;
+    topSection: css`
+      padding-top: 16px;
     `,
-    fetcher: css`
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
+    middleSection: css`
+      padding-bottom: 32px;
     `,
   };
 };
 
 function App() {
+  const [isSilhouette, toggleIsSilhouette] = useReducer((s) => !s, false);
   const { getRandomPokemon, data, randomSprite, isFetching, isError, isSuccess } =
     usePokemonSprite();
-
+  const pokemonName = data?.name ?? 'No pokemon loaded';
+  const pokemonId = data?.id;
   const classes = getClasses({ isFetching });
 
   return (
     <div css={classes.app}>
-      <div css={classes.container}>
-        <div css={classes.fetcher}>
-          <p>
-            {isFetching
-              ? 'Fetching pokemon...'
-              : isError
-              ? 'Error fetching pokemon!'
-              : isSuccess
-              ? 'Successfully fetched pokemon!'
-              : 'Waiting to fetch pokemon'}
-          </p>
-          <p>
-            <Button variant="contained" color="primary" onClick={getRandomPokemon}>
-              Next Pokemon
-            </Button>
-          </p>
-        </div>
-        <div css={classes.spritesContainer}>
-          <span css={classes.pokemonName}>
-            {capitalizeFirstLetter(data?.name ?? 'No pokemon loaded')} ({data?.id})
-          </span>
-          <SpriteItem sprite={randomSprite} />
-        </div>
-      </div>
+      <section css={classes.topSection}>
+        {/* LEFT */}
+        <SpriteItem sprite={randomSprite} isFetching={isFetching} isSilhouette={isSilhouette} />
+      </section>
+      <section css={classes.middleSection}>
+        {/* RIGHT */}
+        <PokemonControls
+          pokemonName={pokemonName}
+          pokemonId={pokemonId}
+          isFetching={isFetching}
+          isError={isError}
+          isSuccess={isSuccess}
+          getRandomPokemon={getRandomPokemon}
+          toggleIsSilhouette={toggleIsSilhouette}
+        />
+      </section>
     </div>
   );
 }
