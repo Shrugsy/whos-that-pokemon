@@ -1,7 +1,10 @@
 import { css } from '@emotion/react';
-import { Button } from '@material-ui/core';
 
 import { capitalizeFirstLetter } from '@/utils/general';
+import { Pokemon } from '@/service/types';
+
+import { StyledButton } from './StyledButton';
+import { QuizButton } from './QuizButton';
 
 const containerCss = css`
   display: flex;
@@ -22,6 +25,10 @@ const buttonsCss = css`
 type PokemonControlsProps = {
   pokemonName: string;
   pokemonId: number | undefined;
+  pokemonOneData: Pokemon | undefined;
+  pokemonTwoData: Pokemon | undefined;
+  pokemonThreeData: Pokemon | undefined;
+  pokemonFourData: Pokemon | undefined;
   isFetching: boolean;
   isError: boolean;
   isSuccess: boolean;
@@ -32,6 +39,10 @@ type PokemonControlsProps = {
 export function PokemonControls({
   pokemonName,
   pokemonId,
+  pokemonOneData,
+  pokemonTwoData,
+  pokemonThreeData,
+  pokemonFourData,
   isFetching,
   isError,
   isSuccess,
@@ -55,12 +66,16 @@ export function PokemonControls({
       </div>
       <div css={pokemonDetailsCss}>{isSilhouette ? '' : pokemonDetails}</div>
       <div css={buttonsCss}>
-        <Button variant="contained" color="primary" onClick={getRandomPokemon}>
+        <QuizButton pokemonData={pokemonOneData} isReady={!isFetching && isSuccess} />
+        <QuizButton pokemonData={pokemonTwoData} isReady={!isFetching && isSuccess} />
+        <QuizButton pokemonData={pokemonThreeData} isReady={!isFetching && isSuccess} />
+        <QuizButton pokemonData={pokemonFourData} isReady={!isFetching && isSuccess} />
+        <StyledButton disabled={isFetching} onClick={getRandomPokemon}>
           Next Pokemon
-        </Button>
-        <Button variant="contained" color="primary" onClick={() => toggleIsSilhouette()}>
+        </StyledButton>
+        <StyledButton disabled={isFetching} onClick={() => toggleIsSilhouette()}>
           Toggle Silhouette
-        </Button>
+        </StyledButton>
       </div>
     </div>
   );

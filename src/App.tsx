@@ -37,7 +37,11 @@ const classes = {
 function App() {
   const {
     getRandomPokemon,
-    data,
+    correctData,
+    pokemonOneData,
+    pokemonTwoData,
+    pokemonThreeData,
+    pokemonFourData,
     randomSprite,
     isFetching,
     isError,
@@ -45,8 +49,8 @@ function App() {
     isSilhouette,
     toggleIsSilhouette,
   } = usePokemonSprite();
-  const pokemonName = data?.name ?? 'No pokemon loaded';
-  const pokemonId = data?.id;
+  const correctPokemonName = correctData?.name ?? 'No pokemon loaded';
+  const correctPokemonId = correctData?.id;
 
   return (
     <div css={classes.app}>
@@ -57,8 +61,12 @@ function App() {
       <section css={classes.rightSection}>
         {/* RIGHT */}
         <PokemonControls
-          pokemonName={pokemonName}
-          pokemonId={pokemonId}
+          pokemonName={correctPokemonName}
+          pokemonId={correctPokemonId}
+          pokemonOneData={pokemonOneData}
+          pokemonTwoData={pokemonTwoData}
+          pokemonThreeData={pokemonThreeData}
+          pokemonFourData={pokemonFourData}
           isFetching={isFetching}
           isError={isError}
           isSuccess={isSuccess}

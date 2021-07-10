@@ -12,7 +12,7 @@ type GetClassesOpts = {
 
 const getClasses = ({ isFetching, isSilhouette, isShiny }: GetClassesOpts) => {
   const silhouetteStyles = css`
-    filter: contrast(0%) brightness(0%);
+    filter: contrast(0%) brightness(0%) blur(5px);
   `;
   return {
     imageContainer: css`

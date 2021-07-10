@@ -5,6 +5,7 @@ import { Pokemon, PokemonSprites, Sprite } from './types';
 
 export const api = createApi({
   reducerPath: 'service',
+  keepUnusedDataFor: 60 * 15, // keep in cache for 15 mins
   baseQuery: fetchBaseQuery({ baseUrl: 'https://pokeapi.co/api/v2/' }),
   endpoints: (build) => ({
     getPokemonById: build.query<Pokemon, number>({
