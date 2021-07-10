@@ -51,6 +51,7 @@ function App() {
           isError={isError}
           isSuccess={isSuccess}
           getRandomPokemon={getRandomPokemon}
+          isSilhouette={isSilhouette}
           toggleIsSilhouette={toggleIsSilhouette}
         />
       </section>

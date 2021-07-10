@@ -628,6 +628,11 @@
     "@types/yargs" "^16.0.0"
     chalk "^4.0.0"
 
+"@juggle/resize-observer@^3.2.0":
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/@juggle/resize-observer/-/resize-observer-3.3.1.tgz#b50a781709c81e10701004214340f25475a171a0"
+  integrity sha512-zMM9Ds+SawiUkakS7y94Ymqx+S0ORzpG3frZirN3l+UlXUmSUR7hF4wxCVqW+ei94JzV5kt0uXBcoOEAuiydrw==
+
 "@material-ui/core@^4.11.4":
   version "4.12.1"
   resolved "https://registry.yarnpkg.com/@material-ui/core/-/core-4.12.1.tgz#ac8f081498047aa02bb6ee70b77c5dad6a2a6e73"
@@ -3886,6 +3891,13 @@ react-refresh@^0.10.0:
   version "0.10.0"
   resolved "https://registry.yarnpkg.com/react-refresh/-/react-refresh-0.10.0.tgz#2f536c9660c0b9b1d500684d9e52a65e7404f7e3"
   integrity sha512-PgidR3wST3dDYKr6b4pJoqQFpPGNKDSCDx4cZoshjXipw3LzO7mG1My2pwEzz2JVkF+inx3xRpDeQLFQGH/hsQ==
+
+react-sparkle@^1.0.8:
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/react-sparkle/-/react-sparkle-1.0.8.tgz#5540d3f8a6dc486441781288fac48f0e457c1667"
+  integrity sha512-1zta8K6zefi5uKomEZUXnBJZWAxsPtgg8YO0iCo7/lQGA+h0YN6i/w5Ez14iAo59WCd82LcuFSKc55YjUr3lMw==
+  dependencies:
+    "@juggle/resize-observer" "^3.2.0"
 
 react-transition-group@^4.4.0:
   version "4.4.2"

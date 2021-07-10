@@ -8,7 +8,11 @@ const containerCss = css`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  gap: 16px;
   min-width: 250px;
+`;
+const pokemonDetailsCss = css`
+  height: 1.5rem;
 `;
 const buttonsCss = css`
   display: flex;
@@ -22,6 +26,7 @@ type PokemonControlsProps = {
   isError: boolean;
   isSuccess: boolean;
   getRandomPokemon: () => void;
+  isSilhouette: boolean;
   toggleIsSilhouette: () => void;
 };
 export function PokemonControls({
@@ -31,11 +36,15 @@ export function PokemonControls({
   isError,
   isSuccess,
   getRandomPokemon,
+  isSilhouette,
   toggleIsSilhouette,
 }: PokemonControlsProps) {
+  const displayedName = capitalizeFirstLetter(pokemonName);
+  const displayedId = pokemonId ? ` (${pokemonId})` : '';
+  const pokemonDetails = `${displayedName}${displayedId}`;
   return (
     <div css={containerCss}>
-      <p>
+      <div>
         {isFetching
           ? 'Fetching pokemon...'
           : isError
@@ -43,12 +52,8 @@ export function PokemonControls({
           : isSuccess
           ? 'Successfully fetched pokemon!'
           : 'Waiting to fetch pokemon'}
-      </p>
-      <p>
-        <span>
-          {capitalizeFirstLetter(pokemonName)} {pokemonId ? `(${pokemonId})` : ''}
-        </span>
-      </p>
+      </div>
+      <div css={pokemonDetailsCss}>{isSilhouette ? '' : pokemonDetails}</div>
       <div css={buttonsCss}>
         <Button variant="contained" color="primary" onClick={getRandomPokemon}>
           Next Pokemon
