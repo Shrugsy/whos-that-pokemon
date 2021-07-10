@@ -1,7 +1,7 @@
 import { css } from '@emotion/react';
 
 import { SpriteItem } from './components/SpriteItem';
-import { usePokemonSprite } from './utils/usePokemonSprite';
+import { usePokemonQuiz } from './utils/usePokemonQuiz';
 import { PokemonControls } from './components/PokemonControls';
 
 const flexCenter = css`
@@ -13,6 +13,15 @@ const classes = {
   app: css`
     min-height: 100vh;
     overflow: auto;
+    display: flex;
+    flex-direction: column;
+  `,
+  heading: css`
+    text-align: center;
+  `,
+  gameContainer: css`
+    height: 100%;
+    flex-grow: 1;
     display: flex;
     @media only screen and (max-width: 1024px) {
       flex-direction: column;
@@ -36,45 +45,53 @@ const classes = {
 
 function App() {
   const {
-    getRandomPokemon,
     correctData,
     pokemonOneData,
     pokemonTwoData,
     pokemonThreeData,
     pokemonFourData,
+    pokemonIdChoices,
+    pickedId,
     randomSprite,
     isFetching,
     isError,
     isSuccess,
     isSilhouette,
-    toggleIsSilhouette,
-  } = usePokemonSprite();
-  const correctPokemonName = correctData?.name ?? 'No pokemon loaded';
-  const correctPokemonId = correctData?.id;
+    getRandomPokemon,
+    pickChoice,
+  } = usePokemonQuiz();
 
   return (
     <div css={classes.app}>
-      <section css={classes.leftSection}>
-        {/* LEFT */}
-        <SpriteItem sprite={randomSprite} isFetching={isFetching} isSilhouette={isSilhouette} />
-      </section>
-      <section css={classes.rightSection}>
-        {/* RIGHT */}
-        <PokemonControls
-          pokemonName={correctPokemonName}
-          pokemonId={correctPokemonId}
-          pokemonOneData={pokemonOneData}
-          pokemonTwoData={pokemonTwoData}
-          pokemonThreeData={pokemonThreeData}
-          pokemonFourData={pokemonFourData}
-          isFetching={isFetching}
-          isError={isError}
-          isSuccess={isSuccess}
-          getRandomPokemon={getRandomPokemon}
-          isSilhouette={isSilhouette}
-          toggleIsSilhouette={toggleIsSilhouette}
-        />
-      </section>
+      <h1 css={classes.heading}>Who&apos;s that Pokemon?</h1>
+      <div css={classes.gameContainer}>
+        <section css={classes.leftSection}>
+          {/* LEFT */}
+          <SpriteItem
+            key={`${randomSprite?.url}-${isFetching}`}
+            sprite={randomSprite}
+            isFetching={isFetching}
+            isSilhouette={isSilhouette}
+          />
+        </section>
+        <section css={classes.rightSection}>
+          {/* RIGHT */}
+          <PokemonControls
+            correctPokemonId={correctData?.id}
+            pokemonOneData={pokemonOneData}
+            pokemonTwoData={pokemonTwoData}
+            pokemonThreeData={pokemonThreeData}
+            pokemonFourData={pokemonFourData}
+            pokemonIdChoices={pokemonIdChoices}
+            pickedId={pickedId}
+            isFetching={isFetching}
+            isError={isError}
+            isSuccess={isSuccess}
+            getRandomPokemon={getRandomPokemon}
+            onChoicePicked={pickChoice}
+          />
+        </section>
+      </div>
     </div>
   );
 }

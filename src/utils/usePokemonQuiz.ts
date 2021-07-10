@@ -16,26 +16,23 @@ const ranges = {
   },
 };
 
-type ArrayOf4Nums = [number, number, number, number];
+export type ArrayOf4Nums = [number, number, number, number];
 type Num0To3 = 0 | 1 | 2 | 3;
 function assertNumInRng0To3(num: number): asserts num is Num0To3 {
   if (![0, 1, 2, 3].includes(num)) {
     throw new Error(`Number ${num} is not in range 0 to 3`);
   }
 }
-type SliceState = {
-  pokemonId: number;
-  pokemonIdChoices: ArrayOf4Nums;
-  isSilhouette: boolean;
-};
+
 type AvailableGenerations = keyof typeof ranges;
 function getRandomPokemonId(generation: AvailableGenerations = 'gen1'): number {
   return getRandomInt(ranges[generation].min, ranges[generation].max);
 }
 function getNewChoiceData(generation: AvailableGenerations): {
   choices: ArrayOf4Nums;
-  activeIdx: 0 | 1 | 2 | 3;
+  activeIdx: Num0To3;
 } {
+  // TODO: fix below to not include duplicates!
   const choices: ArrayOf4Nums = [
     getRandomPokemonId(generation),
     getRandomPokemonId(generation),
@@ -51,8 +48,16 @@ function getNewChoiceData(generation: AvailableGenerations): {
   };
 }
 
+type SliceState = {
+  pickedId: number | null;
+  pokemonId: number;
+  pokemonIdChoices: ArrayOf4Nums;
+  isSilhouette: boolean;
+};
+
 const { choices, activeIdx } = getNewChoiceData('gen1');
 const initialState: SliceState = {
+  pickedId: null,
   pokemonId: choices[activeIdx],
   pokemonIdChoices: choices,
   isSilhouette: true,
@@ -62,7 +67,7 @@ const initialState: SliceState = {
  * Bulk logic hook for managing quiz state
  * TODO: re-name to something else (not specific to sprite)
  */
-export const usePokemonSprite = () => {
+export const usePokemonQuiz = () => {
   const generation: AvailableGenerations = 'gen1';
 
   const [state, dispatchAction] = useLocalSlice({
@@ -77,20 +82,14 @@ export const usePokemonSprite = () => {
           activeIdx: 0 | 1 | 2 | 3;
         }>
       ) {
-        draft.isSilhouette = true;
         draft.pokemonId = payload.choices[payload.activeIdx];
         draft.pokemonIdChoices = payload.choices;
-      },
-      pokemonIdReceived(draft, { payload }: PayloadAction<number>) {
+        draft.pickedId = null;
         draft.isSilhouette = true;
-        draft.pokemonId = payload;
       },
-      silhouetteToggled(draft, { payload }: { payload?: boolean }) {
-        if (typeof payload === 'boolean') {
-          draft.isSilhouette = payload;
-        } else {
-          draft.isSilhouette = !draft.isSilhouette;
-        }
+      choicePicked(draft, { payload }: PayloadAction<number>) {
+        draft.pickedId = payload;
+        draft.isSilhouette = false;
       },
     },
   });
@@ -163,12 +162,14 @@ export const usePokemonSprite = () => {
     pokemonTwoData,
     pokemonThreeData,
     pokemonFourData,
-    getRandomPokemon,
+    pokemonIdChoices: state.pokemonIdChoices,
+    pickedId: state.pickedId,
     randomSprite,
     isFetching,
     isError,
     isSuccess,
     isSilhouette: state.isSilhouette,
-    toggleIsSilhouette: dispatchAction.silhouetteToggled,
+    getRandomPokemon,
+    pickChoice: dispatchAction.choicePicked,
   };
 };

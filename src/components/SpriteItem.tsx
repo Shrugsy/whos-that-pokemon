@@ -7,10 +7,9 @@ import { Sparkles } from './Sparkles';
 type GetClassesOpts = {
   isFetching: boolean;
   isSilhouette: boolean;
-  isShiny: boolean;
 };
 
-const getClasses = ({ isFetching, isSilhouette, isShiny }: GetClassesOpts) => {
+const getClasses = ({ isFetching, isSilhouette }: GetClassesOpts) => {
   const silhouetteStyles = css`
     filter: contrast(0%) brightness(0%) blur(5px);
   `;
@@ -44,9 +43,8 @@ export function SpriteItem({ sprite, isFetching, isSilhouette }: SpriteProps) {
   }
 
   const { name, url, isShiny } = sprite;
-  const classes = getClasses({ isFetching, isSilhouette, isShiny });
+  const classes = getClasses({ isFetching, isSilhouette });
 
-  if (isShiny) console.log('shiny!!');
   // TODO: show placeholder while fetching new sprite
   return (
     <div css={classes.imageContainer}>

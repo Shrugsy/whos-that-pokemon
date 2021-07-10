@@ -10,9 +10,7 @@ export function setUpStore() {
     },
     middleware: (gDM) =>
       gDM({
-        serializableCheck: {
-          warnAfter: 200,
-        },
+        serializableCheck: false,
       }).concat(api.middleware),
   });
   setupListeners(store.dispatch);

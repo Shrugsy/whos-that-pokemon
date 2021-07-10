@@ -1,3 +1,5 @@
+export type CorePokemonData = Pick<Pokemon, 'id' | 'name' | 'sprites'>;
+
 /**
  * Result returned from {@link [https://pokeapi.co/api/v2/pokemon/(id-or-name)/](https://pokeapi.co/docs/v2#pokemon)}
  */

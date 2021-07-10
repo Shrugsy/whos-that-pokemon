@@ -4,7 +4,7 @@ import { Button, ButtonProps } from '@material-ui/core';
 const styles = css`
   text-transform: none;
 
-  .Mui-disabled {
+  &.Mui-disabled {
     background-color: #00000047;
     color: #f1f1f18f;
   }

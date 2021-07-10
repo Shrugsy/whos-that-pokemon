@@ -1,15 +1,23 @@
 import { createApi, fetchBaseQuery, skipToken } from '@reduxjs/toolkit/query/react';
 import { useMemo } from 'react';
 
-import { Pokemon, PokemonSprites, Sprite } from './types';
+import { CorePokemonData, Pokemon, PokemonSprites, Sprite } from './types';
 
 export const api = createApi({
   reducerPath: 'service',
   keepUnusedDataFor: 60 * 15, // keep in cache for 15 mins
   baseQuery: fetchBaseQuery({ baseUrl: 'https://pokeapi.co/api/v2/' }),
   endpoints: (build) => ({
-    getPokemonById: build.query<Pokemon, number>({
+    getPokemonById: build.query<CorePokemonData, number>({
       query: (id) => `pokemon/${id}`,
+      transformResponse: ({ id, name, sprites }: Pokemon) => {
+        return {
+          id,
+          name,
+          sprites,
+        };
+      },
+      // TODO: add validation in onQueryStarted with yup
     }),
   }),
 });

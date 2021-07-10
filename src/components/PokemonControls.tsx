@@ -1,7 +1,7 @@
 import { css } from '@emotion/react';
 
-import { capitalizeFirstLetter } from '@/utils/general';
-import { Pokemon } from '@/service/types';
+import { CorePokemonData } from '@/service/types';
+import { ArrayOf4Nums } from '@/utils/usePokemonQuiz';
 
 import { StyledButton } from './StyledButton';
 import { QuizButton } from './QuizButton';
@@ -14,69 +14,72 @@ const containerCss = css`
   gap: 16px;
   min-width: 250px;
 `;
-const pokemonDetailsCss = css`
-  height: 1.5rem;
-`;
-const buttonsCss = css`
+
+const quizBtnsContainerCss = css`
   display: flex;
   flex-direction: column;
   gap: 16px;
 `;
+const nextPokemonBtnCss = css`
+  margin-top: 32px;
+`;
 type PokemonControlsProps = {
-  pokemonName: string;
-  pokemonId: number | undefined;
-  pokemonOneData: Pokemon | undefined;
-  pokemonTwoData: Pokemon | undefined;
-  pokemonThreeData: Pokemon | undefined;
-  pokemonFourData: Pokemon | undefined;
+  correctPokemonId: number | undefined;
+  pokemonOneData: CorePokemonData | undefined;
+  pokemonTwoData: CorePokemonData | undefined;
+  pokemonThreeData: CorePokemonData | undefined;
+  pokemonFourData: CorePokemonData | undefined;
+  pokemonIdChoices: ArrayOf4Nums;
+  pickedId: number | null;
   isFetching: boolean;
   isError: boolean;
   isSuccess: boolean;
   getRandomPokemon: () => void;
-  isSilhouette: boolean;
-  toggleIsSilhouette: (nextState?: boolean) => void;
+  onChoicePicked: (pokemonId: number) => void;
 };
 export function PokemonControls({
-  pokemonName,
-  pokemonId,
+  correctPokemonId,
   pokemonOneData,
   pokemonTwoData,
   pokemonThreeData,
   pokemonFourData,
+  pokemonIdChoices,
+  pickedId,
   isFetching,
   isError,
   isSuccess,
   getRandomPokemon,
-  isSilhouette,
-  toggleIsSilhouette,
+  onChoicePicked,
 }: PokemonControlsProps) {
-  const displayedName = capitalizeFirstLetter(pokemonName);
-  const displayedId = pokemonId ? ` (${pokemonId})` : '';
-  const pokemonDetails = `${displayedName}${displayedId}`;
+  function handleButtonClick(pokemonId: number | undefined) {
+    if (pokemonId === undefined) {
+      throw new Error('Button was clicked but no ID was provided!');
+    }
+    onChoicePicked(pokemonId);
+  }
+
   return (
     <div css={containerCss}>
-      <div>
-        {isFetching
-          ? 'Fetching pokemon...'
-          : isError
-          ? 'Error fetching pokemon!'
-          : isSuccess
-          ? 'Successfully fetched pokemon!'
-          : 'Waiting to fetch pokemon'}
+      <div>{isError && 'Error fetching pokemon!'}</div>
+      <div css={quizBtnsContainerCss}>
+        {[pokemonOneData, pokemonTwoData, pokemonThreeData, pokemonFourData].map((data, index) => (
+          <QuizButton
+            key={`${index}-${pokemonIdChoices[index]}`}
+            pokemonData={data}
+            isReady={!isFetching && isSuccess}
+            pickedId={pickedId}
+            correctId={correctPokemonId}
+            onClick={() => handleButtonClick(data?.id)}
+          />
+        ))}
       </div>
-      <div css={pokemonDetailsCss}>{isSilhouette ? '' : pokemonDetails}</div>
-      <div css={buttonsCss}>
-        <QuizButton pokemonData={pokemonOneData} isReady={!isFetching && isSuccess} />
-        <QuizButton pokemonData={pokemonTwoData} isReady={!isFetching && isSuccess} />
-        <QuizButton pokemonData={pokemonThreeData} isReady={!isFetching && isSuccess} />
-        <QuizButton pokemonData={pokemonFourData} isReady={!isFetching && isSuccess} />
-        <StyledButton disabled={isFetching} onClick={getRandomPokemon}>
-          Next Pokemon
-        </StyledButton>
-        <StyledButton disabled={isFetching} onClick={() => toggleIsSilhouette()}>
-          Toggle Silhouette
-        </StyledButton>
-      </div>
+      <StyledButton
+        css={nextPokemonBtnCss}
+        disabled={isFetching || pickedId == null}
+        onClick={getRandomPokemon}
+      >
+        Next Pokemon
+      </StyledButton>
     </div>
   );
 }
