@@ -9,6 +9,7 @@ module.exports = {
   maxWorkers: 4,
   globals: {
     'ts-jest': {
+      babelConfig: true,
       tsconfig: './tsconfig.test.json',
       isolatedModules: true,
     },
