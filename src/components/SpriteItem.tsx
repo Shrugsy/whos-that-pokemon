@@ -1,7 +1,8 @@
 import { css } from '@emotion/react';
-import Sparkles from 'react-sparkle';
 
 import { Sprite } from '@/service/types';
+
+import { Sparkles } from './Sparkles';
 
 type GetClassesOpts = {
   isFetching: boolean;
@@ -47,8 +48,6 @@ export function SpriteItem({ sprite, isFetching, isSilhouette }: SpriteProps) {
 
   if (isShiny) console.log('shiny!!');
   // TODO: show placeholder while fetching new sprite
-  // @ts-expect-error TODO: remove this
-  console.log({ Sparkles, default: Sparkles.default });
   return (
     <div css={classes.imageContainer}>
       {isShiny && !isSilhouette ? (
