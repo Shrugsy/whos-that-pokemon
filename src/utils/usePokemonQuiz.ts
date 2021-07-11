@@ -48,24 +48,33 @@ function getNewChoiceData(generation: AvailableGenerations): {
   };
 }
 
-type SliceState = {
+export type SliceState = {
   pickedId: number | null;
-  pokemonId: number;
+  correctPokemonId: number;
   pokemonIdChoices: ArrayOf4Nums;
   isSilhouette: boolean;
+  score: number;
+  lives: number;
+  gameStatus: 'running' | 'game over';
 };
 
 const { choices, activeIdx } = getNewChoiceData('gen1');
 const initialState: SliceState = {
   pickedId: null,
-  pokemonId: choices[activeIdx],
+  correctPokemonId: choices[activeIdx],
   pokemonIdChoices: choices,
   isSilhouette: true,
+  score: 0,
+  lives: 3,
+  gameStatus: 'running',
 };
 
 /**
  * Bulk logic hook for managing quiz state
- * TODO: re-name to something else (not specific to sprite)
+ * TODO: count 'unique pokemon encountered'
+ * count 'unique shinies encountered'
+ * count 'total shinies encountered'
+ * use animated sprites
  */
 export const usePokemonQuiz = () => {
   const generation: AvailableGenerations = 'gen1';
@@ -82,14 +91,44 @@ export const usePokemonQuiz = () => {
           activeIdx: 0 | 1 | 2 | 3;
         }>
       ) {
-        draft.pokemonId = payload.choices[payload.activeIdx];
+        draft.correctPokemonId = payload.choices[payload.activeIdx];
         draft.pokemonIdChoices = payload.choices;
         draft.pickedId = null;
         draft.isSilhouette = true;
       },
       choicePicked(draft, { payload }: PayloadAction<number>) {
+        // payload represents the picked pokemon ID
+        if (payload === draft.correctPokemonId) {
+          draft.score += 1;
+        } else {
+          draft.lives -= 1;
+          if (draft.lives <= 0) {
+            draft.gameStatus = 'game over';
+          }
+        }
+
         draft.pickedId = payload;
         draft.isSilhouette = false;
+      },
+      gameRestarted(
+        draft,
+        {
+          payload,
+        }: PayloadAction<{
+          choices: ArrayOf4Nums;
+          activeIdx: 0 | 1 | 2 | 3;
+        }>
+      ) {
+        const { choices, activeIdx } = payload;
+        return {
+          pickedId: null,
+          correctPokemonId: choices[activeIdx],
+          pokemonIdChoices: choices,
+          isSilhouette: true,
+          score: 0,
+          lives: 3,
+          gameStatus: 'running',
+        };
       },
     },
   });
@@ -100,7 +139,7 @@ export const usePokemonQuiz = () => {
     isFetching: isCorrectDataFetching,
     isError: isCorrectDataError,
     isSuccess: isCorrectDataSuccess,
-  } = useGetPokemonSpritesByIdQuery(state.pokemonId || skipToken);
+  } = useGetPokemonSpritesByIdQuery(state.correctPokemonId || skipToken);
   const {
     data: pokemonOneData,
     isFetching: isPokemonOneFetching,
@@ -154,6 +193,10 @@ export const usePokemonQuiz = () => {
     const choiceData = getNewChoiceData(generation);
     dispatchAction.pokemonIdChoicesReceived(choiceData);
   }, [generation, dispatchAction]);
+
+  const restartGame = useCallback(() => {
+    dispatchAction.gameRestarted(getNewChoiceData(generation));
+  }, [generation, dispatchAction]);
   // #endregion
 
   return {
@@ -169,7 +212,11 @@ export const usePokemonQuiz = () => {
     isError,
     isSuccess,
     isSilhouette: state.isSilhouette,
+    score: state.score,
+    lives: state.lives,
+    gameStatus: state.gameStatus,
     getRandomPokemon,
     pickChoice: dispatchAction.choicePicked,
+    restartGame,
   };
 };

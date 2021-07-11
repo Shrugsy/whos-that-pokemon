@@ -57,8 +57,12 @@ function App() {
     isError,
     isSuccess,
     isSilhouette,
+    score,
+    lives,
+    gameStatus,
     getRandomPokemon,
     pickChoice,
+    restartGame,
   } = usePokemonQuiz();
 
   return (
@@ -87,8 +91,12 @@ function App() {
             isFetching={isFetching}
             isError={isError}
             isSuccess={isSuccess}
+            score={score}
+            lives={lives}
+            gameStatus={gameStatus}
             getRandomPokemon={getRandomPokemon}
             onChoicePicked={pickChoice}
+            onRestartGame={restartGame}
           />
         </section>
       </div>

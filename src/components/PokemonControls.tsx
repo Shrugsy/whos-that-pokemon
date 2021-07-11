@@ -1,7 +1,7 @@
 import { css } from '@emotion/react';
 
 import { CorePokemonData } from '@/service/types';
-import { ArrayOf4Nums } from '@/utils/usePokemonQuiz';
+import { ArrayOf4Nums, SliceState } from '@/utils/usePokemonQuiz';
 
 import { StyledButton } from './StyledButton';
 import { QuizButton } from './QuizButton';
@@ -23,9 +23,15 @@ const quizBtnsContainerCss = css`
 const nextPokemonBtnCss = css`
   margin-top: 32px;
 `;
+const statsTextCss = css`
+  font-size: 1.2rem;
+`;
 const outcomeTextCss = css`
-  height: 1.5rem;
+  height: 3.5rem;
   font-size: 2rem;
+`;
+const gameOverButtonContainerCss = css`
+  height: 46px;
 `;
 type PokemonControlsProps = {
   correctPokemonId: number | undefined;
@@ -38,8 +44,12 @@ type PokemonControlsProps = {
   isFetching: boolean;
   isError: boolean;
   isSuccess: boolean;
+  score: number;
+  lives: number;
+  gameStatus: SliceState['gameStatus'];
   getRandomPokemon: () => void;
   onChoicePicked: (pokemonId: number) => void;
+  onRestartGame: () => void;
 };
 export function PokemonControls({
   correctPokemonId,
@@ -52,8 +62,12 @@ export function PokemonControls({
   isFetching,
   isError,
   isSuccess,
+  score,
+  lives,
+  gameStatus,
   getRandomPokemon,
   onChoicePicked,
+  onRestartGame,
 }: PokemonControlsProps) {
   function handleButtonClick(pokemonId: number | undefined) {
     if (pokemonId === undefined) {
@@ -89,7 +103,14 @@ export function PokemonControls({
       >
         Next Pokemon
       </StyledButton>
+      <div css={statsTextCss}>Score: {score}</div>
+      <div css={statsTextCss}>Lives: {lives}</div>
       <div css={outcomeTextCss}>{outcomeText}</div>
+      <div css={gameOverButtonContainerCss}>
+        {gameStatus === 'game over' && (
+          <StyledButton onClick={onRestartGame}>Game over! Try again?</StyledButton>
+        )}
+      </div>
     </div>
   );
 }
