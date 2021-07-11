@@ -55,7 +55,6 @@ export type SliceState = {
   isSilhouette: boolean;
   score: number;
   lives: number;
-  gameStatus: 'running' | 'game over';
 };
 
 const { choices, activeIdx } = getNewChoiceData('gen1');
@@ -66,7 +65,6 @@ const initialState: SliceState = {
   isSilhouette: true,
   score: 0,
   lives: 3,
-  gameStatus: 'running',
 };
 
 /**
@@ -91,20 +89,25 @@ export const usePokemonQuiz = () => {
           activeIdx: 0 | 1 | 2 | 3;
         }>
       ) {
+        if (draft.lives <= 0) {
+          console.error('Bad logic: Received new choices when lives were below 0');
+          return;
+        }
         draft.correctPokemonId = payload.choices[payload.activeIdx];
         draft.pokemonIdChoices = payload.choices;
         draft.pickedId = null;
         draft.isSilhouette = true;
       },
       choicePicked(draft, { payload }: PayloadAction<number>) {
+        if (draft.lives <= 0) {
+          console.error('Bad logic: Picked a choice when lives were below 0');
+          return;
+        }
         // payload represents the picked pokemon ID
         if (payload === draft.correctPokemonId) {
           draft.score += 1;
         } else {
           draft.lives -= 1;
-          if (draft.lives <= 0) {
-            draft.gameStatus = 'game over';
-          }
         }
 
         draft.pickedId = payload;
@@ -132,6 +135,8 @@ export const usePokemonQuiz = () => {
       },
     },
   });
+
+  const gameStatus: 'running' | 'game over' = state.lives > 0 ? 'running' : 'game over';
 
   const {
     data: correctData,
@@ -214,7 +219,7 @@ export const usePokemonQuiz = () => {
     isSilhouette: state.isSilhouette,
     score: state.score,
     lives: state.lives,
-    gameStatus: state.gameStatus,
+    gameStatus,
     getRandomPokemon,
     pickChoice: dispatchAction.choicePicked,
     restartGame,

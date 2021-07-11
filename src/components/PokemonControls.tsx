@@ -46,7 +46,7 @@ type PokemonControlsProps = {
   isSuccess: boolean;
   score: number;
   lives: number;
-  gameStatus: SliceState['gameStatus'];
+  gameStatus: 'running' | 'game over';
   getRandomPokemon: () => void;
   onChoicePicked: (pokemonId: number) => void;
   onRestartGame: () => void;
@@ -98,7 +98,7 @@ export function PokemonControls({
       </div>
       <StyledButton
         css={nextPokemonBtnCss}
-        disabled={isFetching || pickedId == null}
+        disabled={isFetching || pickedId == null || gameStatus === 'game over'}
         onClick={getRandomPokemon}
       >
         Next Pokemon
