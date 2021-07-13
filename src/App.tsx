@@ -57,6 +57,7 @@ function App() {
     isError,
     isSuccess,
     isSilhouette,
+    isShiny,
     score,
     lives,
     gameStatus,
@@ -91,6 +92,7 @@ function App() {
             isFetching={isFetching}
             isError={isError}
             isSuccess={isSuccess}
+            isShiny={!!isShiny}
             score={score}
             lives={lives}
             gameStatus={gameStatus}

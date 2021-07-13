@@ -98,19 +98,23 @@ export const usePokemonQuiz = () => {
         draft.pickedId = null;
         draft.isSilhouette = true;
       },
-      choicePicked(draft, { payload }: PayloadAction<number>) {
+      choicePicked(
+        draft,
+        { payload: { chosenId, isShiny } }: PayloadAction<{ chosenId: number; isShiny: boolean }>
+      ) {
         if (draft.lives <= 0) {
           console.error('Bad logic: Picked a choice when lives were below 0');
           return;
         }
         // payload represents the picked pokemon ID
-        if (payload === draft.correctPokemonId) {
+        if (chosenId === draft.correctPokemonId) {
           draft.score += 1;
+          if (isShiny) draft.lives += 1;
         } else {
           draft.lives -= 1;
         }
 
-        draft.pickedId = payload;
+        draft.pickedId = chosenId;
         draft.isSilhouette = false;
       },
       gameRestarted(
@@ -170,6 +174,8 @@ export const usePokemonQuiz = () => {
     isSuccess: isPokemonFourSuccess,
   } = useGetPokemonByIdQuery(state.pokemonIdChoices[3]);
 
+  const randomSprite = useMemo(() => pickRandomSprite(spritesArray), [spritesArray]);
+
   // #region DERIVED STATUSES
   const isFetching =
     isCorrectDataFetching ||
@@ -192,8 +198,6 @@ export const usePokemonQuiz = () => {
   // #endregion
 
   // #region HANDLERS
-  const randomSprite = useMemo(() => pickRandomSprite(spritesArray), [spritesArray]);
-
   const getRandomPokemon = useCallback(() => {
     const choiceData = getNewChoiceData(generation);
     dispatchAction.pokemonIdChoicesReceived(choiceData);
@@ -217,6 +221,7 @@ export const usePokemonQuiz = () => {
     isError,
     isSuccess,
     isSilhouette: state.isSilhouette,
+    isShiny: randomSprite?.isShiny,
     score: state.score,
     lives: state.lives,
     gameStatus,

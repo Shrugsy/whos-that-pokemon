@@ -44,11 +44,12 @@ type PokemonControlsProps = {
   isFetching: boolean;
   isError: boolean;
   isSuccess: boolean;
+  isShiny: boolean;
   score: number;
   lives: number;
   gameStatus: 'running' | 'game over';
   getRandomPokemon: () => void;
-  onChoicePicked: (pokemonId: number) => void;
+  onChoicePicked: ({ chosenId, isShiny }: { chosenId: number; isShiny: boolean }) => void;
   onRestartGame: () => void;
 };
 export function PokemonControls({
@@ -62,6 +63,7 @@ export function PokemonControls({
   isFetching,
   isError,
   isSuccess,
+  isShiny,
   score,
   lives,
   gameStatus,
@@ -73,7 +75,7 @@ export function PokemonControls({
     if (pokemonId === undefined) {
       throw new Error('Button was clicked but no ID was provided!');
     }
-    onChoicePicked(pokemonId);
+    onChoicePicked({ chosenId: pokemonId, isShiny });
   }
 
   let outcomeText = '';
